@@ -2,7 +2,7 @@
 FROM rust:1.83-alpine AS builder
 
 # Install build dependencies
-RUN apk add --no-cache musl-dev
+RUN apk add --no-cache musl-dev perl make
 
 WORKDIR /app
 

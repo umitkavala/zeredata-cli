@@ -336,4 +336,3 @@ MIT
 - Backend API: `../backend/`
 - Frontend: `../frontend/`
 - Documentation: `../docs/`
-<!-- Automated sync test Sun Nov 30 16:34:24 +03 2025 -->
