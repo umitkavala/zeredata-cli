@@ -149,6 +149,21 @@ enum JobCommands {
         config: Option<PathBuf>,
     },
 
+    /// Quick Start - Generate with procedural objects (no assets needed)
+    QuickStart {
+        /// Number of scenes to generate
+        #[arg(short = 's', long)]
+        num_scenes: i32,
+
+        /// Object count range (e.g., "20-30")
+        #[arg(short, long, default_value = "25-35")]
+        objects: String,
+
+        /// Environment type (warehouse_shelf, floor, table)
+        #[arg(short, long, default_value = "warehouse_shelf")]
+        environment: String,
+    },
+
     /// Get job status
     Status {
         /// Job ID
@@ -237,6 +252,9 @@ async fn main() {
             JobCommands::List => commands::jobs::list().await,
             JobCommands::Create { name, num_scenes, config } => {
                 commands::jobs::create(name, num_scenes, config).await
+            }
+            JobCommands::QuickStart { num_scenes, objects, environment } => {
+                commands::jobs::quick_start(num_scenes, Some(objects), Some(environment)).await
             }
             JobCommands::Status { job_id } => commands::jobs::status(job_id).await,
             JobCommands::Watch { job_id } => commands::jobs::watch(job_id).await,

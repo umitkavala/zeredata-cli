@@ -155,6 +155,12 @@ zere jobs create --name "Warehouse Test" --num-scenes 100
 # Create job with config file
 zere jobs create --name "Custom Job" --num-scenes 500 --config config.yaml
 
+# Quick Start - Generate without assets (30 seconds to start!)
+zere jobs quick-start --num-scenes 100
+
+# Quick Start with custom parameters
+zere jobs quick-start --num-scenes 500 --objects 20-30 --environment warehouse_shelf
+
 # Get job status
 zere jobs status JOB_ID
 
@@ -163,6 +169,39 @@ zere jobs watch JOB_ID
 
 # Cancel a running job
 zere jobs cancel JOB_ID
+```
+
+#### Quick Start Mode
+
+**New!** Generate synthetic data in 30 seconds without uploading assets:
+
+```bash
+# Generate 100 warehouse scenes with procedural objects
+zere jobs quick-start -s 100
+
+# Customize object count (25-35 objects per scene)
+zere jobs quick-start -s 100 --objects 25-35
+
+# Choose environment type
+zere jobs quick-start -s 100 --environment floor
+```
+
+**Available environments:**
+- `warehouse_shelf` - Warehouse bin picking (default)
+- `floor` - Floor-based scene
+- `table` - Tabletop scene
+
+**What's generated:**
+- Procedural objects (boxes, bottles, pouches, cylinders)
+- Realistic materials with color variation
+- Physics-based object placement
+- Complete annotations (YOLO, COCO, BOP formats)
+
+**Perfect for:**
+- Testing the platform
+- Quick demos
+- Prototyping ML pipelines
+- Benchmarking rendering performance
 ```
 
 ### Dataset Management
