@@ -56,13 +56,13 @@ jobs:
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
 
-      - name: Build
-        run: |
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            cross build --release --target ${{ matrix.target }}
-          else
-            cargo build --release --target ${{ matrix.target }}
-          fi
+      - name: Build (Linux with cross)
+        if: matrix.os == 'ubuntu-latest'
+        run: cross build --release --target ${{ matrix.target }}
+
+      - name: Build (macOS/Windows)
+        if: matrix.os != 'ubuntu-latest'
+        run: cargo build --release --target ${{ matrix.target }}
 
       - name: Rename binary
         run: |
