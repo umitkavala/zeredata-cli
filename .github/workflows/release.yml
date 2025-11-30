@@ -57,14 +57,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libssl-dev pkg-config
 
-      - name: Install cross
-        if: matrix.os == 'ubuntu-latest'
+      - name: Install cross (for ARM64 only)
+        if: matrix.os == 'ubuntu-latest' && matrix.target == 'aarch64-unknown-linux-gnu'
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
 
-      - name: Build (Linux with cross)
-        if: matrix.os == 'ubuntu-latest'
+      - name: Build (Linux ARM64 with cross)
+        if: matrix.os == 'ubuntu-latest' && matrix.target == 'aarch64-unknown-linux-gnu'
         run: cross build --release --target ${{ matrix.target }}
+
+      - name: Build (Linux x86_64 native)
+        if: matrix.os == 'ubuntu-latest' && matrix.target == 'x86_64-unknown-linux-gnu'
+        run: cargo build --release --target ${{ matrix.target }}
 
       - name: Build (macOS/Windows)
         if: matrix.os != 'ubuntu-latest'
