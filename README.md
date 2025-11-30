@@ -107,21 +107,84 @@ zere --version
 
 ### Authentication
 
+#### 🔒 Secure Login (Recommended)
+
 ```bash
-# Login with interactive prompts
+# Interactive login - Password hidden, not saved in history
 zere login
-
-# Login with API key
-zere login --api-key YOUR_API_KEY
-
-# Login with email/password flags
-zere login --email user@example.com --password mypassword
+# Prompts:
+#   Email: user@example.com
+#   Password: ******* (hidden input)
 
 # Show current user
 zere whoami
 
 # Logout
 zere logout
+```
+
+#### 🔑 API Key Authentication (For Automation)
+
+```bash
+# Using environment variable (RECOMMENDED for scripts/CI)
+export ZERE_API_KEY=your_api_key_here
+zere login
+
+# Using flag (visible in process list - use with caution)
+zere login --api-key YOUR_API_KEY
+
+# One-liner for scripts
+ZERE_API_KEY=your_key zere jobs list
+```
+
+#### ⚠️ Insecure Methods (NOT Recommended)
+
+```bash
+# ❌ INSECURE: Password visible in command history
+zere login --email user@example.com --password mypassword
+# CLI will show security warning!
+
+# ✅ BETTER: Use interactive prompt instead
+zere login --email user@example.com
+# Prompts: Password: ******* (hidden)
+```
+
+#### Security Best Practices
+
+**For Interactive Use:**
+1. ✅ Use `zere login` without flags
+2. ✅ Password input is hidden
+3. ✅ Token stored securely in `~/.config/zere/config.toml` (600 permissions)
+4. ✅ No password in command history
+
+**For Automation/CI:**
+1. ✅ Use environment variable: `ZERE_API_KEY`
+2. ✅ Generate API key from web dashboard
+3. ✅ Store in CI secrets (GitHub Actions, GitLab CI, etc.)
+4. ✅ Never commit API keys to git
+
+**What NOT to Do:**
+- ❌ Never use `--password` flag in production
+- ❌ Never commit credentials to git repositories
+- ❌ Never share API keys in screenshots/logs
+- ❌ Never use `--password` in shell scripts (visible in `ps aux`)
+
+#### Configuration File
+
+Credentials stored in:
+```
+~/.config/zere/config.toml (macOS/Linux)
+%APPDATA%\zere\config.toml (Windows)
+```
+
+File permissions automatically set to `600` (owner read/write only).
+
+```toml
+[api]
+endpoint = "http://localhost:8001"
+
+[auth]
+api_key = "your_token_here"  # Saved securely after login
 ```
 
 ### Asset Management

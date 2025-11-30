@@ -6,11 +6,22 @@ use console::style;
 pub async fn login(email: Option<String>, password: Option<String>, api_key: Option<String>) -> Result<()> {
     let mut config = Config::load()?;
 
+    // Check environment variable for API key first
+    let api_key = api_key.or_else(|| std::env::var("ZERE_API_KEY").ok());
+
     let token = if let Some(key) = api_key {
         // Use provided API key directly
-        println!("{}", style("Using provided API key...").cyan());
+        println!("{}", style("Using API key authentication...").cyan());
         key
     } else {
+        // Security warning if password provided via flag
+        if password.is_some() {
+            eprintln!("{}", style("⚠️  Warning: Passing passwords via --password flag is insecure!").yellow().bold());
+            eprintln!("{}", style("   Password will be visible in command history and process list.").yellow());
+            eprintln!("{}", style("   Better: Run 'zere login' without --password for secure prompt.").yellow());
+            eprintln!();
+        }
+
         // Prompt for email/password if not provided
         let email = email.or_else(|| {
             inquire::Text::new("Email:")
@@ -26,7 +37,7 @@ pub async fn login(email: Option<String>, password: Option<String>, api_key: Opt
         }).ok_or_else(|| crate::error::CliError::Auth("Password required".to_string()))?;
 
         // Login via API
-        println!("{}", style("Logging in...").cyan());
+        println!("\n{}", style("Logging in...").cyan());
         let client = ApiClient::new(config.api.endpoint.clone(), None)?;
         client.login(email, password).await?
     };
